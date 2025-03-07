@@ -14,6 +14,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { POST__LOGIN } from '../../api/PublicApi';
 import { Input, Checkbox } from "antd";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
     email: yup.string().email("Invalid email format").required("Email is required"),
@@ -55,13 +56,13 @@ const Login = () => {
         },
         {
 
-            onSuccess: (data) => {
+            onSuccess: (data: any) => {
                 localStorage.setItem("userInfo", JSON.stringify(data?.data));
-                // toast.success(data.message);
+                toast.success(data.message);
                 navigate("/dashboard");
             },
-            onError: (error) => {
-                // toast.error(error?.response?.data?.message || "Login failed");
+            onError: (error: any) => {
+                toast.error(error?.response?.data?.message || "Login failed");
             },
         }
     );

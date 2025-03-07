@@ -4,7 +4,6 @@ const Analytics = lazy(() => import('../pages/Analytics'));
 const Finance = lazy(() => import('../pages/Finance'));
 const Tabs = lazy(() => import('../pages/Components/Tabs'));
 const Modals = lazy(() => import('../pages/Components/Modals'));
-const Notification = lazy(() => import('../pages/Components/Notification'));
 const Advanced = lazy(() => import('../pages/DataTables/Advanced'));
 const AccountSetting = lazy(() => import('../pages/Users/AccountSetting'));
 const AdminLogin = lazy(() => import('../pages/Authentication/AdminLogin'));
@@ -64,10 +63,6 @@ const routes = [
     {
         path: '/components/modals',
         element: <Modals />,
-    },
-    {
-        path: '/components/notifications',
-        element: <Notification />,
     },
     {
         path: '/datatables/advanced',

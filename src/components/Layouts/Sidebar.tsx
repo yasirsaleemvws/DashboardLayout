@@ -133,9 +133,6 @@ const Sidebar = () => {
                                         <li>
                                             <NavLink to="/components/modals">{t('modals')}</NavLink>
                                         </li>
-                                        <li>
-                                            <NavLink to="/components/notifications">{t('notifications')}</NavLink>
-                                        </li>
                                     </ul>
                                 </AnimateHeight>
                             </li>

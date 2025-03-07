@@ -20,6 +20,7 @@ import store from './store/index';
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
+import { ToastContainer } from "react-toastify";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
@@ -27,6 +28,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Suspense>
                 <Provider store={store}>
                     <RouterProvider router={router} />
+                    <ToastContainer />
                 </Provider>
             </Suspense>
         </QueryClientProvider>
