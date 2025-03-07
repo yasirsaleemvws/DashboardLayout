@@ -141,7 +141,6 @@ const SignIn = () => {
                         <div className="w-full max-w-[440px] lg:mt-16">
                             <div className="mb-10">
                                 <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign In</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p>
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={handleSubmit(onSubmit)}>
                                 <div>

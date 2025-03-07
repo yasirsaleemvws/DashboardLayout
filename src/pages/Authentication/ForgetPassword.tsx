@@ -92,7 +92,6 @@ const ForgetPassword = () => {
                         <div className="w-full max-w-[440px] lg:mt-16">
                             <div className="mb-7">
                                 <h1 className="mb-3 text-2xl font-bold !leading-snug dark:text-white">Forgot Password</h1>
-                                <p>Enter your email to recover your ID</p>
                             </div>
                             <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
                                 <div>
@@ -121,7 +120,6 @@ const ForgetPassword = () => {
                                 </button>
                             </form>
                         </div>
-                        <p className="absolute bottom-6 w-full text-center dark:text-white">© {new Date().getFullYear()}.VRISTO All Rights Reserved.</p>
                     </div>
                 </div>
             </div>

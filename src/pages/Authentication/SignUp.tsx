@@ -10,6 +10,8 @@ import IconInstagram from '../../components/Icon/IconInstagram';
 import IconFacebookCircle from '../../components/Icon/IconFacebookCircle';
 import IconTwitter from '../../components/Icon/IconTwitter';
 import IconGoogle from '../../components/Icon/IconGoogle';
+import IconThumbUp from '../../components/Icon/IconThumbUp';
+import IconHome from '../../components/Icon/IconHome';
 
 const SignUP = () => {
     const dispatch = useDispatch();
@@ -32,6 +34,9 @@ const SignUP = () => {
     const submitForm = () => {
         navigate('/');
     };
+
+
+    const [activeTab4, setActiveTab4] = useState<any>(1);
 
     return (
         <div>
@@ -64,91 +69,69 @@ const SignUP = () => {
                         <div className="w-full max-w-[440px] lg:mt-16">
                             <div className="mb-10">
                                 <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign Up</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to register</p>
                             </div>
-                            <form className="space-y-5 dark:text-white" onSubmit={submitForm}>
-                                <div>
-                                    <label htmlFor="Name">Name</label>
-                                    <div className="relative text-white-dark">
-                                        <input id="Name" type="text" placeholder="Enter Name" className="form-input ps-10 placeholder:text-white-dark" />
-                                        <span className="absolute start-4 top-1/2 -translate-y-1/2">
-                                            <IconUser fill={true} />
-                                        </span>
+                            <form className="mb-5">
+                                <div className="inline-block w-full">
+                                    <div className="relative z-[1]">
+                                        <div
+                                            className={`${activeTab4 === 1 ? 'w-[15%]' : activeTab4 === 2 ? 'w-[48%]' : activeTab4 === 3 ? 'w-[81%]' : ''}
+                                        bg-primary w-[15%] h-1 absolute ltr:left-0 rtl:right-0 top-[30px] m-auto -z-[1] transition-[width]`}
+                                        ></div>
+                                        <ul className="mb-5 grid grid-cols-3">
+                                            <li className="mx-auto">
+                                                <button
+                                                    type="button"
+                                                    className={`${activeTab4 === 1 ? '!border-primary !bg-primary text-white' : ''}
+                                                border-[3px] border-[#f3f2ee] bg-white dark:bg-[#253b5c] dark:border-[#1b2e4b] flex justify-center items-center w-16 h-16 rounded-full`}
+                                                    onClick={() => setActiveTab4(1)}
+                                                >
+                                                    <IconHome />
+                                                </button>
+                                                <span className={`${activeTab4 === 1 ? 'text-primary ' : ''}text-center block mt-2`}>Home</span>
+                                            </li>
+                                            <li className="mx-auto">
+                                                <button
+                                                    type="button"
+                                                    className={`${activeTab4 === 2 ? '!border-primary !bg-primary text-white' : ''}
+                                                border-[3px] border-[#f3f2ee] bg-white dark:bg-[#253b5c] dark:border-[#1b2e4b] flex justify-center items-center w-16 h-16 rounded-full`}
+                                                    onClick={() => setActiveTab4(2)}
+                                                >
+                                                    <IconUser className="w-5 h-5" />
+                                                </button>
+                                                <span className={`${activeTab4 === 2 ? 'text-primary ' : ''}text-center block mt-2`}>About</span>
+                                            </li>
+                                            <li className="mx-auto">
+                                                <button
+                                                    type="button"
+                                                    className={`${activeTab4 === 3 ? '!border-primary !bg-primary text-white' : ''}
+                                                border-[3px] border-[#f3f2ee] bg-white dark:bg-[#253b5c] dark:border-[#1b2e4b] flex justify-center items-center w-16 h-16 rounded-full`}
+                                                    onClick={() => setActiveTab4(3)}
+                                                >
+                                                    <IconThumbUp className="w-5 h-5" />
+                                                </button>
+                                                <span className={`${activeTab4 === 3 ? 'text-primary ' : ''}text-center block mt-2`}>Success</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p className="mb-5">{activeTab4 === 1 && ' Try the keyboard navigation by clicking arrow left or right!'}</p>
+
+                                        <p className="mb-5">{activeTab4 === 2 && 'The next and previous buttons help you to navigate through your content.'}</p>
+
+                                        <p className="mb-5">{activeTab4 === 3 && 'Wonderful transition effects.'}</p>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <button type="button" className={`btn btn-primary ${activeTab4 === 1 ? 'hidden' : ''}`} onClick={() => setActiveTab4(activeTab4 === 3 ? 2 : 1)}>
+                                            Back
+                                        </button>
+                                        <button type="button" className="btn btn-primary ltr:ml-auto rtl:mr-auto" onClick={() => setActiveTab4(activeTab4 === 1 ? 2 : 3)}>
+                                            {activeTab4 === 3 ? 'Finish' : 'Next'}
+                                        </button>
                                     </div>
                                 </div>
-                                <div>
-                                    <label htmlFor="Email">Email</label>
-                                    <div className="relative text-white-dark">
-                                        <input id="Email" type="email" placeholder="Enter Email" className="form-input ps-10 placeholder:text-white-dark" />
-                                        <span className="absolute start-4 top-1/2 -translate-y-1/2">
-                                            <IconMail fill={true} />
-                                        </span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label htmlFor="Password">Password</label>
-                                    <div className="relative text-white-dark">
-                                        <input id="Password" type="password" placeholder="Enter Password" className="form-input ps-10 placeholder:text-white-dark" />
-                                        <span className="absolute start-4 top-1/2 -translate-y-1/2">
-                                            <IconLockDots fill={true} />
-                                        </span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="flex cursor-pointer items-center">
-                                        <input type="checkbox" className="form-checkbox bg-white dark:bg-black" />
-                                        <span className="text-white-dark">Subscribe to weekly newsletter</span>
-                                    </label>
-                                </div>
-                                <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
-                                    Sign Up
-                                </button>
                             </form>
 
-                            <div className="relative my-7 text-center md:mb-9">
-                                <span className="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"></span>
-                                <span className="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light">or</span>
-                            </div>
-                            <div className="mb-10 md:mb-[60px]">
-                                <ul className="flex justify-center gap-3.5 text-white">
-                                    <li>
-                                        <Link
-                                            to="#"
-                                            className="inline-flex h-8 w-8 items-center justify-center rounded-full p-0 transition hover:scale-110"
-                                            style={{ background: 'linear-gradient(135deg, rgba(239, 18, 98, 1) 0%, rgba(67, 97, 238, 1) 100%)' }}
-                                        >
-                                            <IconInstagram />
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            to="#"
-                                            className="inline-flex h-8 w-8 items-center justify-center rounded-full p-0 transition hover:scale-110"
-                                            style={{ background: 'linear-gradient(135deg, rgba(239, 18, 98, 1) 0%, rgba(67, 97, 238, 1) 100%)' }}
-                                        >
-                                            <IconFacebookCircle />
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            to="#"
-                                            className="inline-flex h-8 w-8 items-center justify-center rounded-full p-0 transition hover:scale-110"
-                                            style={{ background: 'linear-gradient(135deg, rgba(239, 18, 98, 1) 0%, rgba(67, 97, 238, 1) 100%)' }}
-                                        >
-                                            <IconTwitter fill={true} />
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            to="#"
-                                            className="inline-flex h-8 w-8 items-center justify-center rounded-full p-0 transition hover:scale-110"
-                                            style={{ background: 'linear-gradient(135deg, rgba(239, 18, 98, 1) 0%, rgba(67, 97, 238, 1) 100%)' }}
-                                        >
-                                            <IconGoogle />
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
+                            
                             <div className="text-center dark:text-white">
                                 Already have an account ?&nbsp;
                                 <Link to="/signin" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
@@ -156,7 +139,6 @@ const SignUP = () => {
                                 </Link>
                             </div>
                         </div>
-                        <p className="absolute bottom-6 w-full text-center dark:text-white">© {new Date().getFullYear()}.VRISTO All Rights Reserved.</p>
                     </div>
                 </div>
             </div>
