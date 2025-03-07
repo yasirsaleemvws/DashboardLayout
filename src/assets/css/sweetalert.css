@@ -272,10 +272,6 @@ body.swal2-toast-shown .swal2-container.toast {
     color: #888ea8;
 }
 
-.dark .swal2-footer {
-    border-color: #888ea8;
-}
-
 .swal2-image {
     margin-bottom: 32px !important;
 }

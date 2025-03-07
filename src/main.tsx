@@ -17,15 +17,19 @@ import router from './router/index';
 // Redux
 import { Provider } from 'react-redux';
 import store from './store/index';
+import { QueryClient, QueryClientProvider } from "react-query";
 
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
-        <Suspense>
-            <Provider store={store}>
-                <RouterProvider router={router} />
-            </Provider>
-        </Suspense>
+        <QueryClientProvider client={queryClient}>
+            <Suspense>
+                <Provider store={store}>
+                    <RouterProvider router={router} />
+                </Provider>
+            </Suspense>
+        </QueryClientProvider>
     </React.StrictMode>
 );
 

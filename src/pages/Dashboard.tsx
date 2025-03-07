@@ -21,7 +21,7 @@ import IconCaretDown from '../components/Icon/IconCaretDown';
 import IconPlus from '../components/Icon/IconPlus';
 import IconMultipleForwardRight from '../components/Icon/IconMultipleForwardRight';
 
-const Index = () => {
+const Dashboard = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Sales Admin'));
@@ -1095,4 +1095,4 @@ const Index = () => {
     );
 };
 
-export default Index;
+export default Dashboard;

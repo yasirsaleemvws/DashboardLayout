@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import App from '../../App';
 import { IRootState } from '../../store';
 import { toggleSidebar } from '../../store/themeConfigSlice';
-import Footer from './Footer';
 import Header from './Header';
 import Setting from './Setting';
 import Sidebar from './Sidebar';
@@ -93,10 +92,6 @@ const DefaultLayout = ({ children }: PropsWithChildren) => {
                             <div className={`${themeConfig.animation} p-6 animate__animated`}>{children}</div>
                         </Suspense>
                         {/* END CONTENT AREA */}
-
-                        {/* BEGIN FOOTER */}
-                        <Footer />
-                        {/* END FOOTER */}
                         <Portals />
                     </div>
                 </div>
