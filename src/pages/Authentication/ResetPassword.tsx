@@ -1,9 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { setPageTitle, toggleRTL } from '../../store/themeConfigSlice';
 import { IRootState } from '../../store';
 import IconMail from '../../components/Icon/IconMail';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useMutation } from "react-query";
+import { POST__RESET_PASSWORD } from '../../api/PublicApi';
+import { toast } from 'react-toastify';
+
+const schema = yup.object().shape({
+    password: yup.string()
+        .required('New Password is required')
+        .min(8, 'Password must be at least 8 characters long'),
+    confirmPassword: yup.string()
+        .oneOf([yup.ref('password'), ''], 'Passwords must match')
+        .required('Confirm Password is required'),
+});
+
 
 const ResetPassword = () => {
     const dispatch = useDispatch();
@@ -23,8 +39,33 @@ const ResetPassword = () => {
     };
     const [flag, setFlag] = useState(themeConfig.locale);
 
-    const submitForm = () => {
-        navigate('/');
+    const { register, handleSubmit, formState: { errors }, } = useForm({
+        resolver: yupResolver(schema),
+    });
+    const { id } = useParams();
+
+
+    const resetMutation = useMutation(
+        async (data) => {
+            const response = await POST__RESET_PASSWORD(data);
+            return response;
+        }, {
+        onSuccess: (data) => {
+            toast.success(data.message);
+            navigate('/signin');
+        },
+        onError: (error: any) => {
+            toast.error(error?.message);
+        },
+    }
+    );
+
+    const onSubmit = async (data: any) => {
+        const params = {
+            token: id,
+            password: data.password
+        }
+        resetMutation.mutateAsync(params);
     };
 
     return (
@@ -58,20 +99,31 @@ const ResetPassword = () => {
                         <div className="w-full max-w-[440px] lg:mt-16">
                             <div className="mb-7">
                                 <h1 className="mb-3 text-2xl font-bold !leading-snug dark:text-white">Reset Password</h1>
-                                <p>Enter your email to recover your ID</p>
                             </div>
-                            <form className="space-y-5" onSubmit={submitForm}>
-                                <div>
-                                    <label htmlFor="Email">Email</label>
-                                    <div className="relative text-white-dark">
-                                        <input id="Email" type="email" placeholder="Enter Email" className="form-input pl-10 placeholder:text-white-dark" />
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2">
-                                            <IconMail fill={true} />
-                                        </span>
-                                    </div>
+                            <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+                                <div className="mb-4">
+                                    <label className="block text-gray-600 text-sm font-medium">New Password</label>
+                                    <input
+                                        type="password"
+                                        placeholder="••••••••"
+                                        className="form-input ps-10 placeholder:text-white-dark"
+                                        {...register("password")}
+                                    />
+                                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+                                </div>
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-600 text-sm font-medium">Confirm Password</label>
+                                    <input
+                                        type="password"
+                                        placeholder="••••••••"
+                                        className="form-input ps-10 placeholder:text-white-dark"
+                                        {...register("confirmPassword")}
+                                    />
+                                    {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>}
                                 </div>
                                 <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
-                                    RECOVER
+                                    Reset
                                 </button>
                             </form>
                         </div>

@@ -4,6 +4,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { setPageTitle, toggleRTL } from '../../store/themeConfigSlice';
 import { IRootState } from '../../store';
 import IconMail from '../../components/Icon/IconMail';
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { toast } from "react-toastify";
+import { useMutation } from "react-query";
+import { Input } from "antd";
+import { POST__FORGET_PASSWORD } from '../../api/PublicApi';
+
+const schema = yup.object().shape({
+    email: yup.string().email("Invalid email format").required("Email is required"),
+});
 
 const ForgetPassword = () => {
     const dispatch = useDispatch();
@@ -23,8 +34,31 @@ const ForgetPassword = () => {
     };
     const [flag, setFlag] = useState(themeConfig.locale);
 
-    const submitForm = () => {
-        navigate('/');
+    const { control, handleSubmit, formState: { errors }, } = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            email: "",
+        },
+    });
+
+    const forgetMutation = useMutation(
+        async (data) => {
+            const response = await POST__FORGET_PASSWORD(data);
+            return response;
+        }, {
+        onSuccess: (data) => {
+            toast.success(data.message);
+        },
+        onError: (error: any) => {
+            console.log("Error:", error?.message);
+
+            toast.error(error?.message);
+        },
+    }
+    );
+
+    const onSubmit = async (data: any) => {
+        forgetMutation.mutateAsync(data);
     };
 
     return (
@@ -60,15 +94,27 @@ const ForgetPassword = () => {
                                 <h1 className="mb-3 text-2xl font-bold !leading-snug dark:text-white">Forgot Password</h1>
                                 <p>Enter your email to recover your ID</p>
                             </div>
-                            <form className="space-y-5" onSubmit={submitForm}>
+                            <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
                                 <div>
                                     <label htmlFor="Email">Email</label>
                                     <div className="relative text-white-dark">
-                                        <input id="Email" type="email" placeholder="Enter Email" className="form-input pl-10 placeholder:text-white-dark" />
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2">
+                                        <Controller
+                                            name="email"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    {...field}
+                                                    placeholder="Enter your email"
+                                                    className="form-input ps-10 placeholder:text-white-dark"
+                                                />
+                                            )}
+                                        />
+                                        <span className="absolute start-4 top-1/2 -translate-y-1/2">
                                             <IconMail fill={true} />
                                         </span>
                                     </div>
+                                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+
                                 </div>
                                 <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
                                     RECOVER
