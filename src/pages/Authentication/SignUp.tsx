@@ -4,14 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { setPageTitle, toggleRTL } from '../../store/themeConfigSlice';
 import { IRootState } from '../../store';
 import IconUser from '../../components/Icon/IconUser';
-import IconMail from '../../components/Icon/IconMail';
-import IconLockDots from '../../components/Icon/IconLockDots';
-import IconInstagram from '../../components/Icon/IconInstagram';
-import IconFacebookCircle from '../../components/Icon/IconFacebookCircle';
-import IconTwitter from '../../components/Icon/IconTwitter';
-import IconGoogle from '../../components/Icon/IconGoogle';
 import IconThumbUp from '../../components/Icon/IconThumbUp';
 import IconHome from '../../components/Icon/IconHome';
+import BasicInfo from './steps/BasicInfo';
+import { useMutation } from "react-query";
+import { toast } from "react-toastify";
+import { POST__REGISTER } from '../../api/PublicApi';
+import Address from './steps/Address';
+import ParkingInfo from './steps/ParkingInfo';
 
 const SignUP = () => {
     const dispatch = useDispatch();
@@ -31,13 +31,117 @@ const SignUP = () => {
     };
     const [flag, setFlag] = useState(themeConfig.locale);
 
-    const submitForm = () => {
-        navigate('/');
+    const [activeTab, setActiveTab] = useState<any>('"basic"');
+    const [formData, setFormData] = useState({
+        basicInfo: { name: "", email: "", regNumber: "", businessType: "" },
+        address: { country: "", city: "", state: "", zip: "", address: "", street: "", apartment: "" },
+        parkingInfo: [],
+    });
+
+    const [errors, setErrors] = useState({});
+
+    const registerMutation = useMutation(
+        async (data) => {
+            const response = await POST__REGISTER(data);
+            return response;
+        },
+        {
+            onSuccess: (data) => {
+                toast.success(data.message);
+                navigate('/signin');
+            },
+            onError: (error: any) => {
+                toast.error(error?.message);
+            },
+        }
+    );
+
+    const validateField = (step: any, field: any, value: any) => {
+        let errorMsg = "";
+
+        if (!value) {
+            errorMsg = `${field.replace(/([A-Z])/g, " $1")} is required`;
+        }
+
+        setErrors((prevErrors: any) => ({
+            ...prevErrors,
+            [step]: { ...prevErrors[step], [field]: errorMsg },
+        }));
     };
 
+    const handleChange = (step: any, field: any, value: any, index: any = null) => {
+        setFormData((prev: any) => {
+            if (step === "parkingInfo") {
+                const updatedParking: any = prev.parkingInfo ? [...prev.parkingInfo] : []; // ✅ Ensure array exists
 
-    const [activeTab4, setActiveTab4] = useState<any>(1);
+                if (!updatedParking[index]) {
+                    updatedParking[index] = {};
+                }
 
+                updatedParking[index][field] = value;
+                return { ...prev, parkingInfo: updatedParking };
+            }
+            return { ...prev, [step]: { ...prev[step], [field]: value } };
+
+        });
+
+        validateField(step, field, value);
+    };
+
+    const validateStep = (step: any) => {
+        let newErrors = {};
+        let isValid = true;
+
+        if (step === "basicInfo") {
+            Object.keys(formData.basicInfo).forEach((field: any) => {
+                if (!formData.basicInfo[field]) {
+                    newErrors[field] = `${field.replace(/([A-Z])/g, " $1")} is required`;
+                    isValid = false;
+                }
+            });
+
+            // Password match validation
+            if (formData.basicInfo.password !== formData.basicInfo.confirmPassword) {
+                newErrors.confirmPassword = "Passwords do not match";
+                isValid = false;
+            }
+        } else if (step === "parking") {
+            formData.parkingInfo.forEach((area, index) => {
+                let areaErrors = {};
+                Object.keys(area).forEach((field) => {
+                    if (!area[field]) {
+                        areaErrors[field] = `${field.replace(/([A-Z])/g, " $1")} is required`;
+                        isValid = false;
+                    }
+                });
+                newErrors[index] = areaErrors;
+            });
+        } else {
+            Object.keys(formData[step]).forEach((field) => {
+                if (!formData[step][field]) {
+                    newErrors[field] = `${field.replace(/([A-Z])/g, " $1")} is required`;
+                    isValid = false;
+                }
+            });
+        }
+
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [step]: newErrors,
+        }));
+
+        return isValid;
+    };
+
+    const handleNext = async (step: any, event: any) => {
+        if (validateStep(step)) {
+            if (step === "basicInfo") setActiveTab("address");
+            if (step === "address") setActiveTab("parking");
+            if (step === "parking") {
+                registerMutation.mutateAsync(formData);
+            }
+        }
+    };
     return (
         <div>
             <div className="absolute inset-0">
@@ -74,64 +178,65 @@ const SignUP = () => {
                                 <div className="inline-block w-full">
                                     <div className="relative z-[1]">
                                         <div
-                                            className={`${activeTab4 === 1 ? 'w-[15%]' : activeTab4 === 2 ? 'w-[48%]' : activeTab4 === 3 ? 'w-[81%]' : ''}
+                                            className={`${activeTab === 'basic' ? 'w-[15%]' : activeTab === 'address' ? 'w-[48%]' : activeTab === 'parking' ? 'w-[81%]' : ''}
                                         bg-primary w-[15%] h-1 absolute ltr:left-0 rtl:right-0 top-[30px] m-auto -z-[1] transition-[width]`}
                                         ></div>
                                         <ul className="mb-5 grid grid-cols-3">
                                             <li className="mx-auto">
                                                 <button
                                                     type="button"
-                                                    className={`${activeTab4 === 1 ? '!border-primary !bg-primary text-white' : ''}
+                                                    className={`${activeTab === 'basic' ? '!border-primary !bg-primary text-white' : ''}
                                                 border-[3px] border-[#f3f2ee] bg-white dark:bg-[#253b5c] dark:border-[#1b2e4b] flex justify-center items-center w-16 h-16 rounded-full`}
-                                                    onClick={() => setActiveTab4(1)}
+                                                    onClick={() => setActiveTab("basic")}
                                                 >
                                                     <IconHome />
                                                 </button>
-                                                <span className={`${activeTab4 === 1 ? 'text-primary ' : ''}text-center block mt-2`}>Home</span>
+                                                <span className={`${activeTab === 'basic' ? 'text-primary ' : ''}text-center block mt-2`}>Home</span>
                                             </li>
                                             <li className="mx-auto">
                                                 <button
                                                     type="button"
-                                                    className={`${activeTab4 === 2 ? '!border-primary !bg-primary text-white' : ''}
+                                                    className={`${activeTab === 'address' ? '!border-primary !bg-primary text-white' : ''}
                                                 border-[3px] border-[#f3f2ee] bg-white dark:bg-[#253b5c] dark:border-[#1b2e4b] flex justify-center items-center w-16 h-16 rounded-full`}
-                                                    onClick={() => setActiveTab4(2)}
+                                                    onClick={() => setActiveTab('address')}
                                                 >
                                                     <IconUser className="w-5 h-5" />
                                                 </button>
-                                                <span className={`${activeTab4 === 2 ? 'text-primary ' : ''}text-center block mt-2`}>About</span>
+                                                <span className={`${activeTab === 'address' ? 'text-primary ' : ''}text-center block mt-2`}>About</span>
                                             </li>
                                             <li className="mx-auto">
                                                 <button
                                                     type="button"
-                                                    className={`${activeTab4 === 3 ? '!border-primary !bg-primary text-white' : ''}
+                                                    className={`${activeTab === 'parking' ? '!border-primary !bg-primary text-white' : ''}
                                                 border-[3px] border-[#f3f2ee] bg-white dark:bg-[#253b5c] dark:border-[#1b2e4b] flex justify-center items-center w-16 h-16 rounded-full`}
-                                                    onClick={() => setActiveTab4(3)}
+                                                    onClick={() => setActiveTab('parking')}
                                                 >
                                                     <IconThumbUp className="w-5 h-5" />
                                                 </button>
-                                                <span className={`${activeTab4 === 3 ? 'text-primary ' : ''}text-center block mt-2`}>Success</span>
+                                                <span className={`${activeTab === 'parking' ? 'text-primary ' : ''}text-center block mt-2`}>Success</span>
                                             </li>
                                         </ul>
                                     </div>
                                     <div>
-                                        <p className="mb-5">{activeTab4 === 1 && ' Try the keyboard navigation by clicking arrow left or right!'}</p>
 
-                                        <p className="mb-5">{activeTab4 === 2 && 'The next and previous buttons help you to navigate through your content.'}</p>
-
-                                        <p className="mb-5">{activeTab4 === 3 && 'Wonderful transition effects.'}</p>
+                                        <div className="mb-5">
+                                            {activeTab === "basic" && <BasicInfo formData={formData} handleChange={handleChange} errors={errors.basicInfo} handleNext={handleNext} />}
+                                            {activeTab === "address" && <Address formData={formData} handleChange={handleChange} errors={errors.address} handleNext={handleNext} />}
+                                            {activeTab === "parking" && <ParkingInfo formData={formData} handleChange={handleChange} errors={errors.parking} handleNext={handleNext} loading={registerMutation.isLoading} />}
+                                        </div>
                                     </div>
                                     <div className="flex justify-between">
-                                        <button type="button" className={`btn btn-primary ${activeTab4 === 1 ? 'hidden' : ''}`} onClick={() => setActiveTab4(activeTab4 === 3 ? 2 : 1)}>
+                                        <button type="button" className={`btn btn-primary ${activeTab === 'basic' ? 'hidden' : ''}`} onClick={() => setActiveTab(activeTab === 'parking' ? 'address' : 'basic')}>
                                             Back
                                         </button>
-                                        <button type="button" className="btn btn-primary ltr:ml-auto rtl:mr-auto" onClick={() => setActiveTab4(activeTab4 === 1 ? 2 : 3)}>
-                                            {activeTab4 === 3 ? 'Finish' : 'Next'}
+                                        <button type="button" className="btn btn-primary ltr:ml-auto rtl:mr-auto" onClick={() => setActiveTab(activeTab === 'basic' ? 'address' : 'parking')}>
+                                            {activeTab === 'parking' ? 'Finish' : 'Next'}
                                         </button>
                                     </div>
                                 </div>
                             </form>
 
-                            
+
                             <div className="text-center dark:text-white">
                                 Already have an account ?&nbsp;
                                 <Link to="/signin" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
