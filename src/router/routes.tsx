@@ -1,4 +1,6 @@
 import { lazy } from 'react';
+import CompanyRoute from './CompanyRoute';
+
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Analytics = lazy(() => import('../pages/Analytics'));
 const Finance = lazy(() => import('../pages/Finance'));
@@ -45,34 +47,40 @@ const routes = [
         layout: 'blank',
     },
     {
-        path: '/dashboard',
-        element: <Dashboard />,
+        path: '/',
+        element: <CompanyRoute />,
+        children: [
+            {
+                path: '/dashboard',
+                element: <Dashboard />,
+            },
+            {
+                path: '/analytics',
+                element: <Analytics />,
+            },
+            {
+                path: '/finance',
+                element: <Finance />,
+            },
+            {
+                path: '/components/tabs',
+                element: <Tabs />,
+            },
+            {
+                path: '/components/modals',
+                element: <Modals />,
+            },
+            {
+                path: '/datatables/advanced',
+                element: <Advanced />,
+            },
+            {
+                path: '/users/user-account-settings',
+                element: <AccountSetting />,
+            },
+        ],
     },
-    {
-        path: '/analytics',
-        element: <Analytics />,
-    },
-    {
-        path: '/finance',
-        element: <Finance />,
-    },
-    {
-        path: '/components/tabs',
-        element: <Tabs />,
-    },
-    {
-        path: '/components/modals',
-        element: <Modals />,
-    },
-    {
-        path: '/datatables/advanced',
-        element: <Advanced />,
-    },
-    {
-        path: '/users/user-account-settings',
-        element: <AccountSetting />,
-    },
-
+    
     // {
     //     path: '*',
     //     element: <Error />,
