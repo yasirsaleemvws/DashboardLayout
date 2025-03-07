@@ -7,7 +7,7 @@ const CompanyRoute = () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo") || '{}');
     const token = userInfo?.token;
 
-    return token ? <Outlet /> : <Navigate to="/login" replace />;
+    return token ? <Outlet /> : <Navigate to="/signin" replace />;
 };
 
 export default CompanyRoute;

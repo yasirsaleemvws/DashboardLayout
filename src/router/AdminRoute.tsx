@@ -8,7 +8,7 @@ const AdminRoute = () => {
     const token = userInfo?.token;
     const role = userInfo?.user.role;
 
-    return token && role == 'admin' ? <Outlet /> : <Navigate to="/login" replace />;
+    return token && role == 'admin' ? <Outlet /> : <Navigate to="/signin" replace />;
 };
 
 export default AdminRoute;

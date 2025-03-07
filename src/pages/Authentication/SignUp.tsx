@@ -14,7 +14,7 @@ import IconFacebookCircle from '../../components/Icon/IconFacebookCircle';
 import IconTwitter from '../../components/Icon/IconTwitter';
 import IconGoogle from '../../components/Icon/IconGoogle';
 
-const RegisterCover = () => {
+const SignUP = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Register Cover'));
@@ -193,7 +193,7 @@ const RegisterCover = () => {
                             </div>
                             <div className="text-center dark:text-white">
                                 Already have an account ?&nbsp;
-                                <Link to="/auth/cover-login" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
+                                <Link to="/signin" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
                                     SIGN IN
                                 </Link>
                             </div>
@@ -206,4 +206,4 @@ const RegisterCover = () => {
     );
 };
 
-export default RegisterCover;
+export default SignUP;

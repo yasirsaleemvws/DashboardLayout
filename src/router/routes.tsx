@@ -1,17 +1,19 @@
 import { lazy } from 'react';
 import CompanyRoute from './CompanyRoute';
+import Parking from '../pages/company/parking/Parking';
+import AccessRule from '../pages/company/access-rule/AccessRule';
+import Team from '../pages/company/team/Team';
+import ParkingSection from '../pages/company/parking-section/ParkingSection';
+import Settings from '../pages/company/settings/Settings';
+
+const AdminLogin = lazy(() => import('../pages/Authentication/AdminLogin'));
+const SignIn = lazy(() => import('../pages/Authentication/SignIn'));
+const SignUP = lazy(() => import('../pages/Authentication/SignUp'));
 
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Analytics = lazy(() => import('../pages/Analytics'));
 const Finance = lazy(() => import('../pages/Finance'));
-const Tabs = lazy(() => import('../pages/Components/Tabs'));
-const Modals = lazy(() => import('../pages/Components/Modals'));
-const Advanced = lazy(() => import('../pages/DataTables/Advanced'));
-const AccountSetting = lazy(() => import('../pages/Users/AccountSetting'));
-const AdminLogin = lazy(() => import('../pages/Authentication/AdminLogin'));
 const UnlockBoxed = lazy(() => import('../pages/Authentication/UnlockBox'));
-const Login = lazy(() => import('../pages/Authentication/Login'));
-const RegisterCover = lazy(() => import('../pages/Authentication/RegisterCover'));
 const RecoverIdCover = lazy(() => import('../pages/Authentication/RecoverIdCover'));
 const UnlockCover = lazy(() => import('../pages/Authentication/UnlockCover'));
 
@@ -22,13 +24,13 @@ const routes = [
         layout: 'blank',
     },
     {
-        path: '/login',
-        element: <Login />,
+        path: '/signin',
+        element: <SignIn />,
         layout: 'blank',
     },
     {
-        path: '/register',
-        element: <RegisterCover />,
+        path: '/signup',
+        element: <SignUP />,
         layout: 'blank',
     },
     {
@@ -55,32 +57,33 @@ const routes = [
                 element: <Dashboard />,
             },
             {
-                path: '/analytics',
-                element: <Analytics />,
+                path: '/parking',
+                element: <Parking />,
+            },
+            {
+                path: '/parking-section',
+                element: <ParkingSection />,
+            },
+            {
+                path: '/access-rule',
+                element: <AccessRule />,
             },
             {
                 path: '/finance',
                 element: <Finance />,
             },
             {
-                path: '/components/tabs',
-                element: <Tabs />,
+                path: '/team',
+                element: <Team />,
             },
+
             {
-                path: '/components/modals',
-                element: <Modals />,
-            },
-            {
-                path: '/datatables/advanced',
-                element: <Advanced />,
-            },
-            {
-                path: '/users/user-account-settings',
-                element: <AccountSetting />,
+                path: '/settings',
+                element: <Settings />,
             },
         ],
     },
-    
+
     // {
     //     path: '*',
     //     element: <Error />,

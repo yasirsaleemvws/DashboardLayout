@@ -22,10 +22,10 @@ const schema = yup.object().shape({
     remember: yup.boolean(),
 });
 
-const Login = () => {
+const SignIn = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Login'));
+        dispatch(setPageTitle('Sign-In'));
     });
     const navigate = useNavigate();
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
@@ -140,7 +140,7 @@ const Login = () => {
                         </div>
                         <div className="w-full max-w-[440px] lg:mt-16">
                             <div className="mb-10">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Login</h1>
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign In</h1>
                                 <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p>
                             </div>
                             <form className="space-y-5 dark:text-white" onSubmit={handleSubmit(onSubmit)}>
@@ -209,7 +209,7 @@ const Login = () => {
 
                             <div className="text-center dark:text-white mt-4">
                                 Don't have an account ?&nbsp;
-                                <Link to="/register" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
+                                <Link to="/signup" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
                                     SIGN UP
                                 </Link>
                             </div>
@@ -221,4 +221,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default SignIn;
