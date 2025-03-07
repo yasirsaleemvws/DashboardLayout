@@ -1,26 +1,31 @@
 import { lazy } from 'react';
 import CompanyRoute from './CompanyRoute';
-import Parking from '../pages/company/parking/Parking';
-import AccessRule from '../pages/company/access-rule/AccessRule';
-import Team from '../pages/company/team/Team';
-import ParkingSection from '../pages/company/parking-section/ParkingSection';
 import Settings from '../pages/company/settings/Settings';
 
+// Auth Routes
 const AdminLogin = lazy(() => import('../pages/Authentication/AdminLogin'));
 const SignIn = lazy(() => import('../pages/Authentication/SignIn'));
 const SignUP = lazy(() => import('../pages/Authentication/SignUp'));
+const ForgetPassword = lazy(() => import('../pages/Authentication/ForgetPassword'));
+const ResetPassword = lazy(() => import('../pages/Authentication/ResetPassword'));
 
-const Dashboard = lazy(() => import('../pages/Dashboard'));
-const Analytics = lazy(() => import('../pages/Analytics'));
-const Finance = lazy(() => import('../pages/Finance'));
-const UnlockBoxed = lazy(() => import('../pages/Authentication/UnlockBox'));
-const RecoverIdCover = lazy(() => import('../pages/Authentication/RecoverIdCover'));
-const UnlockCover = lazy(() => import('../pages/Authentication/UnlockCover'));
+// Company Routes
+const Dashboard = lazy(() => import('../pages/company/dashbaord/Dashboard'));
+const Parking = lazy(() => import('../pages/company/parking/Parking'));
+const ParkingSection = lazy(() => import('../pages/company/parking-section/ParkingSection'));
+const AccessRule = lazy(() => import('../pages/company/access-rule/AccessRule'));
+const Finance = lazy(() => import('../pages/company/finance/Finance'));
+const Team = lazy(() => import('../pages/company/team/Team'));
 
 const routes = [
     {
-        path: '/admin-login',
+        path: '/admin/login',
         element: <AdminLogin />,
+        layout: 'blank',
+    },
+    {
+        path: '/',
+        element: <SignIn />,
         layout: 'blank',
     },
     {
@@ -34,18 +39,13 @@ const routes = [
         layout: 'blank',
     },
     {
-        path: '/boxed-lockscreen',
-        element: <UnlockBoxed />,
+        path: '/forget-password',
+        element: <ForgetPassword />,
         layout: 'blank',
     },
     {
-        path: '/cover-lockscreen',
-        element: <UnlockCover />,
-        layout: 'blank',
-    },
-    {
-        path: '/cover-password-reset',
-        element: <RecoverIdCover />,
+        path: '/reset-password/:id',
+        element: <ResetPassword />,
         layout: 'blank',
     },
     {

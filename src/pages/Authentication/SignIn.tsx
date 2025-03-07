@@ -199,7 +199,7 @@ const SignIn = () => {
                                     </label>
                                 </div>
                                 <div className='flex justify-end'>
-                                    <Link to="/forgot-password" className=" text-primary underline transition hover:text-black dark:hover:text-white">Forgot password?</Link>
+                                    <Link to="/forget-password" className=" text-primary underline transition hover:text-black dark:hover:text-white">Forgot password?</Link>
                                 </div>
 
                                 <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
