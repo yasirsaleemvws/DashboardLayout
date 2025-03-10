@@ -12,7 +12,7 @@ const CustomTable: any = ({
       columns={columns}
       dataSource={data}
       scroll={{ x: 800 }}
-      rowKey={(record) => record.id.toString()} // Ensure rowKey is a string
+      rowKey={(record) => (record?.id ? record.id.toString() : `row-${Math.random()}`)} // Ensure fallback key
       loading={loading}
       pagination={{
         current: pagination.current,
@@ -22,6 +22,7 @@ const CustomTable: any = ({
           setPagination({ ...pagination, current: page, pageSize }),
       }}
     />
+
   );
 };
 

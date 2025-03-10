@@ -16,9 +16,9 @@ export default function CustomFilters({ title, setSearch, sort, setSort }) {
     };
 
     return (
-        <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:items-center justify-between p-4">
+        <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:items-center justify-end p-4">
             {/* Title */}
-            <h2 className="text-lg font-semibold text-center md:text-left">{title}</h2>
+            {/* <h2 className="text-lg font-semibold text-center md:text-left">{title}</h2> */}
 
             {/* Search and Actions */}
             <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
