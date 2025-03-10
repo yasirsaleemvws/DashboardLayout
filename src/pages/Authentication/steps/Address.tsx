@@ -1,6 +1,13 @@
-import React from 'react'
+import React from 'react';
 
-export default function Address({ formData, handleChange, errors, handleNext }) {
+interface AddressProps {
+  formData: any;
+  handleChange: (step: string, field: string, value: string) => void;
+  errors: any;
+  handleNext: (step: string) => void;
+}
+
+export default function Address({ formData, handleChange, errors, handleNext }: AddressProps) {
   return (
     <form className="mt-6 space-y-4">
       <div>
@@ -88,5 +95,5 @@ export default function Address({ formData, handleChange, errors, handleNext }) 
 
       <button className="w-full bg-purple-700 text-white py-2 rounded-md hover:bg-purple-700 transition" onClick={() => handleNext("address")}>Next</button>
     </form>
-  )
+  );
 }

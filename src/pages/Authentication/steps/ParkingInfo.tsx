@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 
-export default function ParkingInfo({ formData, errors, handleChange, handleNext, loading }) {
+interface ParkingInfoProps {
+  formData: any;
+  handleChange: (step: string, field: string, value: string, index: number) => void;
+  errors: any;
+  handleNext: (step: string) => void;
+  loading: boolean;
+}
+
+export default function ParkingInfo({ formData, handleChange, errors, handleNext, loading }: ParkingInfoProps) {
   const [parkingAreas, setParkingAreas] = useState([{ areaName: "", length: "", width: "", capacity: "", cameras: "" }]);
 
   const handleAddMore = () => {
@@ -17,11 +25,11 @@ export default function ParkingInfo({ formData, errors, handleChange, handleNext
             <input
               type="text"
               className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none border-gray-300"
-              value={formData.parkingInfo.areaName}
+              value={formData.parkingInfo[index]?.areaName || ""}
               onChange={(e) => handleChange("parkingInfo", "areaName", e.target.value, index)}
               placeholder="Enter Area Name"
             />
-            {errors?.[index]?.areaName && <p className="text-red-600">{errors[index].areaName}</p>}
+            {errors?.[`${index}_areaName`] && <p className="text-red-600">{errors[`${index}_areaName`]}</p>}
           </div>
 
           <div>
@@ -31,21 +39,21 @@ export default function ParkingInfo({ formData, errors, handleChange, handleNext
                 <input
                   type="number"
                   className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none border-gray-300"
-                  value={formData.parkingInfo.length}
+                  value={formData.parkingInfo[index]?.length || ""}
                   onChange={(e) => handleChange("parkingInfo", "length", e.target.value, index)}
                   placeholder="Enter Length"
                 />
-                {errors?.[index]?.length && <p className="text-red-600">{errors[index].length}</p>}
+                {errors?.[`${index}_length`] && <p className="text-red-600">{errors[`${index}_length`]}</p>}
               </div>
               <div>
                 <input
                   type="number"
                   className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none border-gray-300"
-                  value={formData.parkingInfo.width}
+                  value={formData.parkingInfo[index]?.width || ""}
                   onChange={(e) => handleChange("parkingInfo", "width", e.target.value, index)}
                   placeholder="Enter Width"
                 />
-                {errors?.[index]?.width && <p className="text-red-600">{errors[index].width}</p>}
+                {errors?.[`${index}_width`] && <p className="text-red-600">{errors[`${index}_width`]}</p>}
               </div>
             </div>
           </div>
@@ -55,11 +63,11 @@ export default function ParkingInfo({ formData, errors, handleChange, handleNext
             <input
               type="number"
               className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none border-gray-300"
-              value={formData.parkingInfo.capacity}
+              value={formData.parkingInfo[index]?.capacity || ""}
               onChange={(e) => handleChange("parkingInfo", "capacity", e.target.value, index)}
               placeholder="Enter Capacity"
             />
-            {errors?.[index]?.capacity && <p className="text-red-600">{errors[index].capacity}</p>}
+            {errors?.[`${index}_capacity`] && <p className="text-red-600">{errors[`${index}_capacity`]}</p>}
           </div>
 
           <div>
@@ -67,11 +75,11 @@ export default function ParkingInfo({ formData, errors, handleChange, handleNext
             <input
               type="number"
               className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none border-gray-300"
-              value={formData.parkingInfo.cameras}
+              value={formData.parkingInfo[index]?.cameras || ""}
               onChange={(e) => handleChange("parkingInfo", "cameras", e.target.value, index)}
               placeholder="Enter Number of Cameras"
             />
-            {errors?.[index]?.cameras && <p className="text-red-600">{errors[index].cameras}</p>}
+            {errors?.[`${index}_cameras`] && <p className="text-red-600">{errors[`${index}_cameras`]}</p>}
           </div>
 
           {parkingAreas.length > 1 && <hr />}
@@ -84,7 +92,7 @@ export default function ParkingInfo({ formData, errors, handleChange, handleNext
         </div>
       ))}
 
-      <button type="button" className="w-full bg-purple-700 text-white py-2 rounded-md hover:bg-purple-800 transition" onClick={() => handleNext("parking")}>
+      <button type="button" className="w-full bg-purple-700 text-white py-2 rounded-md hover:bg-purple-800 transition" onClick={() => handleNext("parkingInfo")}>
         {loading ? "Register..." : "Register"}
       </button>
     </form>

@@ -17,31 +17,24 @@ const SignUP = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Register Cover'));
-    });
+    }, [dispatch]);
+
     const navigate = useNavigate();
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
+    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl';
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
-    const setLocale = (flag: string) => {
-        setFlag(flag);
-        if (flag.toLowerCase() === 'ae') {
-            dispatch(toggleRTL('rtl'));
-        } else {
-            dispatch(toggleRTL('ltr'));
-        }
-    };
     const [flag, setFlag] = useState(themeConfig.locale);
 
-    const [activeTab, setActiveTab] = useState<any>('"basic"');
+    const [activeTab, setActiveTab] = useState<'basic' | 'address' | 'parking'>('basic');
     const [formData, setFormData] = useState({
-        basicInfo: { name: "", email: "", regNumber: "", businessType: "" },
+        basicInfo: { name: "", email: "", password: "", confirmPassword: "", regNumber: "", businessType: "" },
         address: { country: "", city: "", state: "", zip: "", address: "", street: "", apartment: "" },
-        parkingInfo: [],
+        parkingInfo: [] as Array<{ areaName: string; length: string; width: string; capacity: string; cameras: string }>,
     });
 
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState<{ [key: string]: any }>({});
 
     const registerMutation = useMutation(
-        async (data) => {
+        async (data: typeof formData) => {
             const response = await POST__REGISTER(data);
             return response;
         },
@@ -56,69 +49,61 @@ const SignUP = () => {
         }
     );
 
-    const validateField = (step: any, field: any, value: any) => {
+    const validateField = (step: string, field: string, value: string) => {
         let errorMsg = "";
 
         if (!value) {
             errorMsg = `${field.replace(/([A-Z])/g, " $1")} is required`;
         }
 
-        setErrors((prevErrors: any) => ({
+        setErrors((prevErrors) => ({
             ...prevErrors,
             [step]: { ...prevErrors[step], [field]: errorMsg },
         }));
     };
 
-    const handleChange = (step: any, field: any, value: any, index: any = null) => {
-        setFormData((prev: any) => {
-            if (step === "parkingInfo") {
-                const updatedParking: any = prev.parkingInfo ? [...prev.parkingInfo] : []; // ✅ Ensure array exists
-
-                if (!updatedParking[index]) {
-                    updatedParking[index] = {};
-                }
-
-                updatedParking[index][field] = value;
+    const handleChange = (step: string, field: string, value: string, index: number | null = null) => {
+        setFormData((prev) => {
+            if (step === "parkingInfo" && index !== null) {
+                const updatedParking = [...prev.parkingInfo];
+                updatedParking[index] = { ...updatedParking[index], [field]: value };
                 return { ...prev, parkingInfo: updatedParking };
+            } else {
+                return { ...prev, [step]: { ...prev[step], [field]: value } };
             }
-            return { ...prev, [step]: { ...prev[step], [field]: value } };
-
         });
 
         validateField(step, field, value);
     };
 
-    const validateStep = (step: any) => {
-        let newErrors = {};
+    const validateStep = (step: string) => {
+        let newErrors: { [key: string]: string } = {};
         let isValid = true;
 
         if (step === "basicInfo") {
-            Object.keys(formData.basicInfo).forEach((field: any) => {
-                if (!formData.basicInfo[field]) {
+            Object.keys(formData.basicInfo).forEach((field) => {
+                if (!formData.basicInfo[field as keyof typeof formData.basicInfo]) {
                     newErrors[field] = `${field.replace(/([A-Z])/g, " $1")} is required`;
                     isValid = false;
                 }
             });
 
-            // Password match validation
             if (formData.basicInfo.password !== formData.basicInfo.confirmPassword) {
                 newErrors.confirmPassword = "Passwords do not match";
                 isValid = false;
             }
-        } else if (step === "parking") {
+        } else if (step === "parkingInfo") {
             formData.parkingInfo.forEach((area, index) => {
-                let areaErrors = {};
                 Object.keys(area).forEach((field) => {
-                    if (!area[field]) {
-                        areaErrors[field] = `${field.replace(/([A-Z])/g, " $1")} is required`;
+                    if (!area[field as keyof typeof area]) {
+                        newErrors[`${index}_${field}`] = `${field.replace(/([A-Z])/g, " $1")} is required`;
                         isValid = false;
                     }
                 });
-                newErrors[index] = areaErrors;
             });
         } else {
-            Object.keys(formData[step]).forEach((field) => {
-                if (!formData[step][field]) {
+            Object.keys(formData[step as keyof typeof formData]).forEach((field) => {
+                if (!formData[step as keyof typeof formData][field as keyof typeof formData[typeof step]]) {
                     newErrors[field] = `${field.replace(/([A-Z])/g, " $1")} is required`;
                     isValid = false;
                 }
@@ -133,15 +118,16 @@ const SignUP = () => {
         return isValid;
     };
 
-    const handleNext = async (step: any, event: any) => {
+    const handleNext = async (step: string) => {
         if (validateStep(step)) {
             if (step === "basicInfo") setActiveTab("address");
             if (step === "address") setActiveTab("parking");
-            if (step === "parking") {
-                registerMutation.mutateAsync(formData);
+            if (step === "parkingInfo") {
+                await registerMutation.mutateAsync(formData);
             }
         }
     };
+
     return (
         <div>
             <div className="absolute inset-0">
@@ -218,25 +204,22 @@ const SignUP = () => {
                                         </ul>
                                     </div>
                                     <div>
-
                                         <div className="mb-5">
                                             {activeTab === "basic" && <BasicInfo formData={formData} handleChange={handleChange} errors={errors.basicInfo} handleNext={handleNext} />}
                                             {activeTab === "address" && <Address formData={formData} handleChange={handleChange} errors={errors.address} handleNext={handleNext} />}
-                                            {activeTab === "parking" && <ParkingInfo formData={formData} handleChange={handleChange} errors={errors.parking} handleNext={handleNext} loading={registerMutation.isLoading} />}
+                                            {activeTab === "parking" && <ParkingInfo formData={formData} handleChange={handleChange} errors={errors.parkingInfo} handleNext={handleNext} loading={registerMutation.isLoading} />}
                                         </div>
                                     </div>
-                                    <div className="flex justify-between">
+                                    {/* <div className="flex justify-between">
                                         <button type="button" className={`btn btn-primary ${activeTab === 'basic' ? 'hidden' : ''}`} onClick={() => setActiveTab(activeTab === 'parking' ? 'address' : 'basic')}>
                                             Back
                                         </button>
-                                        <button type="button" className="btn btn-primary ltr:ml-auto rtl:mr-auto" onClick={() => setActiveTab(activeTab === 'basic' ? 'address' : 'parking')}>
+                                        <button type="button" className="btn btn-primary ltr:ml-auto rtl:mr-auto" onClick={() => handleNext(activeTab)}>
                                             {activeTab === 'parking' ? 'Finish' : 'Next'}
                                         </button>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </form>
-
-
                             <div className="text-center dark:text-white">
                                 Already have an account ?&nbsp;
                                 <Link to="/signin" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
