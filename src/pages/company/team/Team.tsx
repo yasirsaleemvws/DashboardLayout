@@ -1,13 +1,12 @@
-import { Tag, Menu } from 'antd';
-import React, { useState } from 'react'
-import Dropdown from '../../../components/Dropdown';
+import React, { useState } from 'react';
+import { Tag, Menu, Dropdown } from 'antd';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { GET_TEAM_MEMBERS, POST_DELETE_TEAM_MEMBER, POST_MEMBER_STATUS } from '../../../api/PrivateApi';
 import { toast } from 'react-toastify';
-import CustomTable from '../../../components/CustomTable';
 import { IoMdMore } from 'react-icons/io';
 import CustomFilters from '../../../components/CustomFilters';
 import AddTeamMemberModal from '../../../components/modals/AddTeamMember';
+import DynamicTable from '../../../components/CustomTable';
 
 export default function Team() {
     const queryClient = useQueryClient();
@@ -17,8 +16,8 @@ export default function Team() {
     const [sort, setSort] = useState(false);
     const [pagination, setPagination] = useState({
         current: 1,
-        pageSize: 10,
-        total: 10,
+        pageSize: 1,
+        total: 0,
     });
 
     // Fetch team members
@@ -27,6 +26,8 @@ export default function Team() {
         () => GET_TEAM_MEMBERS(pagination.current, pagination.pageSize, search, sort ? "asc" : "desc"),
         { keepPreviousData: false }
     );
+
+    pagination.total = data?.pagination.totalRecords || 0;
 
     // Mutation for deleting a team member
     const deleteMemberMutation = useMutation(POST_DELETE_TEAM_MEMBER, {
@@ -137,9 +138,15 @@ export default function Team() {
                 )}
             </div>
 
-            <div className="bg-white shadow-md rounded-lg">
+            <div className="bg-white dark:bg-black shadow-md rounded-lg">
                 <CustomFilters title="All Team Members" setSearch={setSearch} sort={sort} setSort={setSort} />
-                <CustomTable data={data?.data} columns={columns} pagination={pagination} setPagination={setPagination} loading={isLoading} />
+                <DynamicTable
+                    data={data?.data || []}
+                    columns={columns}
+                    pagination={pagination}
+                    setPagination={setPagination}
+                    loading={isLoading}
+                />
             </div>
 
             <AddTeamMemberModal
@@ -149,5 +156,5 @@ export default function Team() {
                 user={userInfo?.user}
             />
         </>
-    )
+    );
 }
